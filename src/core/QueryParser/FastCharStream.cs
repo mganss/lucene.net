@@ -46,14 +46,18 @@ namespace Lucene.Net.QueryParsers
 			input = r;
 		}
 		
-		public char ReadChar()
+		public int ReadChar()
 		{
-			if (bufferPosition >= bufferLength)
-				Refill();
-			return buffer[bufferPosition++];
+            if (bufferPosition >= bufferLength)
+            {
+                var charsRead = Refill();
+                if (charsRead <= 0) return -1;
+            }
+
+			return (int)buffer[bufferPosition++];
 		}
 		
-		private void  Refill()
+		private int Refill()
 		{
 			int newPosition = bufferLength - tokenStart;
 			
@@ -85,13 +89,13 @@ namespace Lucene.Net.QueryParsers
 			tokenStart = 0;
 			
 			int charsRead = input.Read(buffer, newPosition, buffer.Length - newPosition);
-			if (charsRead <= 0)
-				throw new System.IO.IOException("read past eof");
-			else
+			if (charsRead > 0)
 				bufferLength += charsRead;
+
+            return charsRead;
 		}
 		
-		public char BeginToken()
+		public int BeginToken()
 		{
 			tokenStart = bufferPosition;
 			return ReadChar();

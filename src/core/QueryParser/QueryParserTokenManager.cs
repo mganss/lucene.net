@@ -101,7 +101,9 @@ namespace Lucene.Net.QueryParsers
 			jjmatchedPos = pos;
 			try
 			{
-				curChar = input_stream.ReadChar();
+				var i = input_stream.ReadChar();
+                if (i < 0) return pos + 1;
+                curChar = (char)i;
 			}
 			catch (System.IO.IOException)
 			{
@@ -601,7 +603,9 @@ namespace Lucene.Net.QueryParsers
 					return curPos;
 				try
 				{
-					curChar = input_stream.ReadChar();
+					var ci = input_stream.ReadChar();
+                    if (ci < 0) return curPos;
+                    curChar = (char)ci;
 				}
 				catch (System.IO.IOException)
 				{
@@ -651,7 +655,14 @@ namespace Lucene.Net.QueryParsers
 		{
 			try
 			{
-				curChar = input_stream.ReadChar();
+				var i = input_stream.ReadChar();
+                if (i < 0)
+                {
+                    JjStopStringLiteralDfa_1(0, active0);
+                    return 1;
+                }
+
+                curChar = (char)i;
 			}
 			catch (System.IO.IOException)
 			{
@@ -678,7 +689,9 @@ namespace Lucene.Net.QueryParsers
 			jjmatchedPos = pos;
 			try
 			{
-				curChar = input_stream.ReadChar();
+				var i = input_stream.ReadChar();
+                if (i < 0) return pos + 1;
+                curChar = (char)i;
 			}
 			catch (System.IO.IOException)
 			{
@@ -843,7 +856,9 @@ namespace Lucene.Net.QueryParsers
 					return curPos;
 				try
 				{
-					curChar = input_stream.ReadChar();
+					var ci = input_stream.ReadChar();
+                    if (ci < 0) return curPos;
+                    curChar = (char)ci;
 				}
 				catch (System.IO.IOException)
 				{
@@ -944,7 +959,9 @@ namespace Lucene.Net.QueryParsers
 					return curPos;
 				try
 				{
-					curChar = input_stream.ReadChar();
+					var ci = input_stream.ReadChar();
+                    if (ci < 0) return curPos;
+                    curChar = (char)ci;
 				}
 				catch (System.IO.IOException)
 				{
@@ -994,7 +1011,14 @@ namespace Lucene.Net.QueryParsers
 		{
 			try
 			{
-				curChar = input_stream.ReadChar();
+				var i = input_stream.ReadChar();
+                if (i < 0)
+                {
+                    JjStopStringLiteralDfa_2(0, active0);
+                    return 1;
+                }
+
+                curChar = (char)i;
 			}
 			catch (System.IO.IOException)
 			{
@@ -1021,7 +1045,9 @@ namespace Lucene.Net.QueryParsers
 			jjmatchedPos = pos;
 			try
 			{
-				curChar = input_stream.ReadChar();
+				var i = input_stream.ReadChar();
+                if (i < 0) return pos + 1;
+                curChar = (char)i;
 			}
 			catch (System.IO.IOException)
 			{
@@ -1186,7 +1212,9 @@ namespace Lucene.Net.QueryParsers
 					return curPos;
 				try
 				{
-					curChar = input_stream.ReadChar();
+					var ci = input_stream.ReadChar();
+                    if (ci < 0) return curPos;
+                    curChar = (char)ci;
 				}
 				catch (System.IO.IOException)
 				{
@@ -1343,7 +1371,15 @@ namespace Lucene.Net.QueryParsers
 			{
 				try
 				{
-					curChar = input_stream.BeginToken();
+					var ci = input_stream.BeginToken();
+                    if (ci < 0)
+                    {
+                        jjmatchedKind = 0;
+                        matchedToken = JjFillToken();
+                        return matchedToken;
+                    }
+
+                    curChar = (char)ci;
 				}
 				catch (System.IO.IOException)
 				{
@@ -1403,7 +1439,23 @@ namespace Lucene.Net.QueryParsers
 				bool EOFSeen = false;
 				try
 				{
-					input_stream.ReadChar(); input_stream.Backup(1);
+					var ci = input_stream.ReadChar();
+                    if (ci < 0)
+                    {
+                        EOFSeen = true;
+                        error_after = curPos <= 1 ? "" : input_stream.Image;
+                        if (curChar == '\n' || curChar == '\r')
+                        {
+                            error_line++;
+                            error_column = 0;
+                        }
+                        else
+                            error_column++;
+                    }
+                    else
+                    {
+                        input_stream.Backup(1);
+                    }
 				}
 				catch (System.IO.IOException)
 				{
